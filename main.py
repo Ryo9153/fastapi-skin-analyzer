@@ -18,7 +18,7 @@ async def analyzer_skin(file:UploadFile=File(...)):
         shutil.copyfileobj(file.file,buffer)
 
    #仮の診断結果
-　　result={
+   result={
            "毛穴":"目立ちにくい",
            "水分量":"やや少なめ",
            "シミ":"なし"
