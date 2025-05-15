@@ -19,9 +19,9 @@ async def analyzer_skin(file:UploadFile=File(...)):
 
    #仮の診断結果
    result={
-           "毛穴":"目立ちにくい",
-           "水分量":"やや少なめ",
-           "シミ":"なし"
+           "pore":"not visible",
+           "moisture":"slightly low",
+           "spots":"none"
 　　　　　　 }
    
    os.remove(f"temp_{file.filename}")
