@@ -13,16 +13,14 @@ def read_root():
 
 @app.post("/analyze")
 async def analyzer_skin(file:UploadFile=File(...)):
-   #受け取った画像を保存
    with open(f"temp_{file.filename}","wb") as buffer:
         shutil.copyfileobj(file.file,buffer)
 
-   #仮の診断結果
    result={
            "pore":"not visible",
            "moisture":"slightly low",
            "spots":"none"
-　　　　　　 }
+          }
    
    os.remove(f"temp_{file.filename}")
    return JSONResponse(content={"result":result})
