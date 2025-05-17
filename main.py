@@ -13,6 +13,7 @@ def read_root():
 
 @app.post("/analyze")
 async def analyzer_skin(file:UploadFile=File(...)):
+   team_path = f"temp_{file.filename}"
    with open(f"temp_{file.filename}","wb") as buffer:
         shutil.copyfileobj(file.file,buffer)
 
@@ -22,5 +23,5 @@ async def analyzer_skin(file:UploadFile=File(...)):
            "spots":"none"
           }
    
-   os.remove(f"temp_{file.filename}")
+   os.remove(temp_path)
    return JSONResponse(content={"result":result})
