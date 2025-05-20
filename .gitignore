@@ -1,0 +1,10 @@
+*.onnx
+*.h5
+
+venv/
+__pycache__/
+
+*.so
+*.dylib
+.DS_Store
+venv310/
