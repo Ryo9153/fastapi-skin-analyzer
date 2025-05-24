@@ -8,7 +8,7 @@ import io
 app = FastAPI()
 
 try:
-    session = ort.InferenceSession("skin_diagnosis_model.onnx2")
+    session = ort.InferenceSession("skin_model_clean.onnx")
     input_name = session.get_inputs()[0].name
 except Exception as e:
     session = None
