@@ -7,30 +7,25 @@ import io
 
 app = FastAPI()
 
-try:
-    session = ort.InferenceSession("skin_model_clean.onnx")
-    input_name = session.get_inputs()[0].name
-except Exception as e:
-    session = None
-    input_name =None
-    print("ONNXモデルの読み込みに失敗", e)
+session = ort.InferenceSession("skin_model_clean.onnx")
 
-def preprocess(image_bytes):
-    image = Image.open(io.BytesIO(image_bytes)).resize((224, 224))
-    img_array = np.array(image).astype(np.float32) / 255.0
-    img_array = np.expand_dims(img_array, axis=0)  # (1, 224, 224, 3)
-    return img_array
+@app.get("/")
+def read_root():
+    return {"message": "Hello from Render!"}
 
 @app.post("/analyze")
-async def analyze(file: UploadFile = File(...)):
-    if session is None:
-        return JSONResponse(content={"error": "ONNXモデルが読み込まれていません"}, status_code=500)
-
+async def analyze_skin(file: UploadFile = File(...)):
     try:
         contents = await file.read()
-        input_data = preprocess(contents)
-        output = session.run(None, {inputs_name: input_data})
-        result = float(output[0][0][0])
-        return {"result": result, "score": round(result, 2)}
+        image = Image.open(io.BytesIO(contents)).convert("RGB")
+        image = image.resize((224, 224))
+        img_array = np.array(image).astype(np.float32) / 255.0
+        img_array = np.transpose(img_array, (2, 0, 1))
+        img_array = np.expand_dims(img_array, axis=0)
+        inputs = {session.get_inputs()[0].name: img_array}
+        outputs = session.run(None, inputs)
+        result = int(np.argmax(outputs[0]))
+        return JSONResponse(content={"result": result})
+        
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
